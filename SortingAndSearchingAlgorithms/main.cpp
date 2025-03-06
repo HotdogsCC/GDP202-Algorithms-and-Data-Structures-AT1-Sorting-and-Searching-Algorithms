@@ -59,13 +59,46 @@ namespace Search
     // Write your implementation here
     // Return -1 if not found, otherwise return the index where the element is stored.
     int LinearSearch(const DataContainer& data, unsigned int value) {
-        return -1;
+
+        //checks each item in data until the item is found
+        for (int i = 0; i < data.size(); i++)
+        {
+            if (data[i] == value) //checks if current item is the one we're looking for
+            {
+                return i; //returns current index
+            }
+        }
+
+        return -1; //number is not in the array
     }
 
     // Write your implementation here
     // Return -1 if not found, otherwise return the index where the element is stored.
     int BinarySearch(const DataContainer& data, unsigned int value) {
-        return -1;
+
+        //searches for a number from a list sorted from smallest to largest
+
+        int low = 0;
+        int high = data.size();
+
+        while (low <= high) //if the number does not exist in the vector, low will become bigger than high
+        {
+            int middle = (low + high) / 2; //check index in the middle of low and high bounds
+            if (value == data[middle])
+            {
+                return middle;
+            }
+            else if (value < data[middle]) //occurs if the value is smaller than what was tested
+            {
+                high = middle - 1;
+            }
+            else //occurs if the value is bigger than what was tested
+            {
+                low = middle + 1;
+            }
+        }
+
+        return -1; //number is not in the array
     }
 
     constexpr int maximum_elements = 100000;
