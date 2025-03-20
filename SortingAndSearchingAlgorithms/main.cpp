@@ -34,20 +34,157 @@ namespace Sort
 
     void InsertionSort(DataContainer& data) {
         // Write your implementation of Insertion sort here
+
+        // insertion sort takes the current item and compare it to the previous one
+        // hence, loop starts at 1 (2nd index)
+        for(int i = 1; i < data.size(); i++)
+        {
+            unsigned int currentItem = data[i]; //stores the current item
+
+            //starts from the index for the current item
+            //two exit conditions:
+                //if j reaches 0, there are no more elements to check
+                //if current item is bigger than data[j-1], its correct position is found
+            int j = i;
+            while(j > 0 && data[j - 1] > currentItem)
+            {
+                //increment item in the list by 1
+                data[j] = data[j-1];
+
+                //decrement to check next pair;
+                j--;
+            }
+            // insert the current item into its correct place
+            data[j] = currentItem;
+        }
     }
 
+    DataContainer Merge(DataContainer leftData, DataContainer rightData)
+    {
+        int leftIndex = 0;
+        int rightIndex = 0;
+        DataContainer mergedData;
+
+        //whilst we haven't reached the end of the left data and right data
+        while((leftIndex < leftData.size()) && (rightIndex < rightData.size()))
+        {
+            //if left has the smaller number, add it to the data...
+            if(leftData[leftIndex] < rightData[rightIndex])
+            {
+                mergedData.push_back(leftData[leftIndex++]); //add and increment 
+            }
+            //...otherwise add the number from the right
+            else
+            {
+                mergedData.push_back(rightData[rightIndex++]); //add and increment 
+            }
+        }
+        
+        // add the leftover data into the merged data
+        while(leftIndex < leftData.size())
+        {
+            mergedData.push_back(leftData[leftIndex++]); //add and increment 
+        }
+        while(rightIndex < rightData.size())
+        {
+            mergedData.push_back(rightData[rightIndex++]); //add and increment 
+        }
+        return mergedData;
+    }
+    
+    DataContainer MergeSortRecurser(DataContainer data)
+    {
+        //if the list only contains one element, there is no more to split
+        if(data.size() == 1)
+        {
+            return data;
+        }
+        //otherwise, chop the list in half
+        DataContainer::iterator choppingPoint = data.begin() + data.size() / 2; //pointer to where the array should be halved
+
+        DataContainer leftData(data.begin(), choppingPoint); //creates new array with data before chopping point
+        DataContainer rightData(choppingPoint, data.end()); //creates new array with data after chopping point
+
+        //recursively call MergeSortRecurser and Merge to chop the list into individual elements, then rebuild
+        return Merge(MergeSortRecurser(leftData), MergeSortRecurser(rightData));
+    }
+    
     void MergeSort(DataContainer& data) {
         // Write your implementation of Merge sort here
+
+        data = MergeSortRecurser(data);
+        
     }
 
     /************************************************************/
-    /* Add your chosen sort method implementation and name here */
+    /* Cocktail Shaker Sort */
     /************************************************************/
 
-    const char* YourChosenSortName = /**/"Your Sort name goes here"/**/;
+    const char* YourChosenSortName = /**/"Cocktail Shaker Sort"/**/;
 
     void YourChosenSort(DataContainer& data) {
         // Write your implementation of your chosen sort here
+        // A cocktail shaker sort is an expansion on the bubble sort,
+        // alternating direction of swapping on each pass. Useful for avoiding
+        // bubble sort's worst case scenario.
+
+        bool sorted = false;
+        int startIndex = 0;
+        int endIndex = data.size() - 1;
+
+        while(!sorted)
+        {
+            //assume the data is sorted.
+            //if a swap is made, sorted turns false
+            sorted = true;
+
+            //bubble sort from left to right
+            for(int i = startIndex; i < endIndex; i++)
+            {
+                //if the current item is bigger than the one in front, swap
+                if(data[i] > data[i+1])
+                {
+                    unsigned int temp = data[i];
+                    data[i] = data[i+1];
+                    data[i+1] = temp;
+                    
+                    sorted = false;
+                }
+            }
+
+            //sort forces the largest item to the end index,
+            //thus is in the correct position
+            endIndex--;
+
+            //if the array is sorted, return out of the function...
+            if(sorted)
+            {
+                return;
+            }
+            
+            //...otherwise run a bubble swap from right to left
+            
+            //once again assume sorted until proven otherwise
+            sorted = true;
+
+            //bubble sort from right to left
+            for(int i = endIndex; i > startIndex; i--)
+            {
+                //if the current item is smaller than the one behind it, swap
+                if(data[i] < data[i-1])
+                {
+                    unsigned int temp = data[i];
+                    data[i] = data[i-1];
+                    data[i-1] = temp;
+                    
+                    sorted = false;
+                }
+            }
+
+            //sort forces the smallest item to the beginning index,
+            //thus is in the correct position
+            startIndex++;
+        }
     }
 
     constexpr int maximum_elements = 100000;
